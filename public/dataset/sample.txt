@@ -1,0 +1,53 @@
+# Attractions
+ID,Name,Category,EntryFee,VisitTime(hours),Rating
+1,Victoria Memorial,Museum,50,2,5
+2,Science City,Science,80,3,4
+3,Eco Park,Park,30,4,5
+4,Dakshineswar,Temple,20,2,5
+5,Indian Museum,Museum,30,1.5,4
+6,Howrah Bridge,Monument,0,1,5
+7,Birla Planetarium,Science,40,1.5,4
+8,Marble Palace,Historical,0,1,4
+9,Belur Math,Temple,0,1.5,5
+10,Fort William,Historical,0,1,3
+11,Nicco Park,Entertainment,150,3,4
+12,Eden Gardens,Monument,0,1,4
+13,Princep Ghat,Monument,0,1,4
+14,Kalighat Temple,Temple,0,1,4
+15,Alipore Zoo,Park,40,2.5,4
+
+# Distances
+From,To,Distance(km),TravelCost
+1,2,12,80
+1,3,18,120
+1,4,20,140
+1,5,2,15
+1,6,4,30
+1,7,1,10
+1,10,2,15
+1,12,3,20
+1,13,2,15
+1,14,3,25
+1,15,2,15
+2,3,8,50
+2,7,11,75
+2,11,5,35
+3,4,15,100
+3,11,6,40
+4,9,3,20
+5,6,3,20
+5,7,2,15
+5,8,3,25
+6,8,2,15
+6,9,7,50
+6,12,1,10
+6,13,3,20
+7,10,2,15
+7,15,3,20
+8,9,6,45
+9,4,3,20
+10,12,2,15
+10,13,1,10
+12,13,2,15
+14,1,3,25
+14,15,2,15
