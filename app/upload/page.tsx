@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
 import { Upload, FileText, CheckCircle2, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { PageTransition, FadeIn } from "@/components/ui/PageTransition";
 
 type UploadState = "idle" | "uploading" | "success" | "error";
@@ -99,19 +99,7 @@ export default function UploadPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navbar */}
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <div className="flex items-center gap-4">
-            <span
-              className="text-white/50 text-sm hidden sm:block"
-              style={{ fontFamily: "system-ui, sans-serif" }}
-            >
-              Step 1 of 4
-            </span>
-          </div>
-        </nav>
+        <Navbar />
 
         {/* Content */}
         <div className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8 pb-20">

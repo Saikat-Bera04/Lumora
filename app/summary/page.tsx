@@ -2,10 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   Download,
   Printer,
   Share2,
@@ -18,12 +16,14 @@ import {
   ArrowDown,
   Ticket,
   PiggyBank,
-  Map,
-  BarChart3,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/PageTransition";
+import { Navbar } from "@/components/ui/Navbar";
+import { PageTransition, FadeIn } from "@/components/ui/PageTransition";
 import toast from "react-hot-toast";
+import * as htmlToImage from "html-to-image";
+import jsPDF from "jspdf";
 
 export default function SummaryPage() {
   const router = useRouter();
@@ -46,22 +46,22 @@ export default function SummaryPage() {
   const handleDownload = async () => {
     toast.loading("Generating PDF...", { id: "pdf" });
     try {
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
-
       const element = printRef.current;
       if (!element) return;
 
-      const canvas = await html2canvas(element, {
+      const imgData = await htmlToImage.toPng(element, {
         backgroundColor: "#000000",
-        scale: 2,
+        pixelRatio: 2,
       });
 
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       const imgWidth = 210;
       const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // For html-to-image, we can get the dimensions directly from the element,
+      // but since we scaled by pixelRatio=2, the rendered image is twice the element's size.
+      // We'll calculate the aspect ratio to fit A4 width.
+      const aspect = element.offsetHeight / element.offsetWidth;
+      const imgHeight = aspect * imgWidth;
       let heightLeft = imgHeight;
       let position = 0;
 
@@ -75,19 +75,42 @@ export default function SummaryPage() {
         heightLeft -= pageHeight;
       }
 
-      pdf.save("lumora-trip-summary.pdf");
+      pdf.save("voyara-trip-summary.pdf");
       toast.success("PDF downloaded!", { id: "pdf" });
-    } catch {
+    } catch (error) {
+      console.error(error);
       toast.error("Failed to generate PDF", { id: "pdf" });
     }
   };
 
+  const handleDownloadImage = async () => {
+    toast.loading("Generating image...", { id: "img" });
+    try {
+      const element = printRef.current;
+      if (!element) return;
+
+      const dataUrl = await htmlToImage.toPng(element, {
+        backgroundColor: "#000000",
+        pixelRatio: 2,
+      });
+
+      const link = document.createElement("a");
+      link.download = "voyara-trip-summary.png";
+      link.href = dataUrl;
+      link.click();
+      toast.success("Image downloaded!", { id: "img" });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to generate image", { id: "img" });
+    }
+  };
+
   const handleShare = async () => {
-    const text = `Check out my optimized trip plan from Lumora Planner!\n\n${r.attractionsVisited} attractions • ${r.totalDistance.toFixed(1)} km • ₹${r.totalCost} total cost`;
+    const text = `Check out my optimized trip plan from Voyara!\n\n${r.attractionsVisited} attractions • ${r.totalDistance.toFixed(1)} km • ₹${r.totalCost} total cost`;
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Lumora Trip Plan", text });
+        await navigator.share({ title: "Voyara Trip Plan", text });
       } catch {
         // User cancelled
       }
@@ -107,25 +130,9 @@ export default function SummaryPage() {
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6 print:hidden">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <ArrowLeft size={14} /> Dashboard
-            </Link>
-            <Link href="/map" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <Map size={14} />
-            </Link>
-            <Link href="/analytics" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <BarChart3 size={14} />
-            </Link>
-          </div>
-        </nav>
+        <div className="print:hidden">
+          <Navbar />
+        </div>
 
         <div className="flex-1 px-5 sm:px-8 md:px-12 pb-20">
           <PageTransition>
@@ -144,28 +151,35 @@ export default function SummaryPage() {
               <button
                 onClick={handleDownload}
                 className="liquid-glass rounded-full px-5 py-2.5 text-white/70 text-sm flex items-center gap-2 hover:text-white transition-all hover:scale-105"
-                style={{ fontFamily: "system-ui, sans-serif" }}
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
                 <Download size={16} /> Download PDF
               </button>
               <button
+                onClick={handleDownloadImage}
+                className="liquid-glass rounded-full px-5 py-2.5 text-white/70 text-sm flex items-center gap-2 hover:text-white transition-all hover:scale-105"
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
+              >
+                <ImageIcon size={16} /> Download Image
+              </button>
+              <button
                 onClick={handlePrint}
                 className="liquid-glass rounded-full px-5 py-2.5 text-white/70 text-sm flex items-center gap-2 hover:text-white transition-all hover:scale-105"
-                style={{ fontFamily: "system-ui, sans-serif" }}
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
                 <Printer size={16} /> Print
               </button>
               <button
                 onClick={handleShare}
                 className="liquid-glass rounded-full px-5 py-2.5 text-white/70 text-sm flex items-center gap-2 hover:text-white transition-all hover:scale-105"
-                style={{ fontFamily: "system-ui, sans-serif" }}
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
                 <Share2 size={16} /> Share
               </button>
               <button
                 onClick={handleRestart}
                 className="bg-white text-black rounded-full px-5 py-2.5 text-sm flex items-center gap-2 transition-all hover:scale-105"
-                style={{ fontFamily: "system-ui, sans-serif" }}
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
                 <RotateCcw size={16} /> New Trip
               </button>
@@ -294,8 +308,8 @@ export default function SummaryPage() {
 
               {/* Footer */}
               <FadeIn delay={0.35} className="mt-8 text-center">
-                <p className="text-white/20 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>
-                  Generated by Lumora Planner •{" "}
+                <p className="text-white/20 text-xs" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+                  Generated by Voyara •{" "}
                   {new Date(tripSummary.generatedAt).toLocaleDateString("en-IN", {
                     year: "numeric",
                     month: "long",

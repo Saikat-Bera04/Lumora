@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText,
@@ -17,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 
 const PIPELINE_STEPS = [
   { id: "read", label: "Reading Dataset", description: "Loading TXT file data", icon: FileText },
@@ -114,14 +114,7 @@ export default function ProcessingPage() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.01] rounded-full blur-3xl" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <span className="text-white/50 text-sm" style={{ fontFamily: "system-ui, sans-serif" }}>
-            Optimizing...
-          </span>
-        </nav>
+        <Navbar />
 
         <div className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8">
           <div className="w-full max-w-lg">

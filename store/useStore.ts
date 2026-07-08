@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { Dataset, Preferences, OptimizationResult, TripSummary } from "@/types";
 
 interface AppState {
@@ -22,6 +23,10 @@ interface AppState {
   isOptimizing: boolean;
   setIsOptimizing: (val: boolean) => void;
 
+  // Session info (from landing page)
+  userEmail: string;
+  setUserEmail: (email: string) => void;
+
   // Reset
   reset: () => void;
 }
@@ -35,28 +40,47 @@ const defaultPreferences: Preferences = {
   maxAttractions: 5,
 };
 
-export const useStore = create<AppState>((set) => ({
-  dataset: null,
-  setDataset: (dataset) => set({ dataset }),
-
-  preferences: defaultPreferences,
-  setPreferences: (preferences) => set({ preferences }),
-
-  optimizationResult: null,
-  setOptimizationResult: (optimizationResult) => set({ optimizationResult }),
-
-  tripSummary: null,
-  setTripSummary: (tripSummary) => set({ tripSummary }),
-
-  isOptimizing: false,
-  setIsOptimizing: (isOptimizing) => set({ isOptimizing }),
-
-  reset: () =>
-    set({
+export const useStore = create<AppState>()(
+  persist(
+    (set) => ({
       dataset: null,
+      setDataset: (dataset) => set({ dataset }),
+
       preferences: defaultPreferences,
+      setPreferences: (preferences) => set({ preferences }),
+
       optimizationResult: null,
+      setOptimizationResult: (optimizationResult) => set({ optimizationResult }),
+
       tripSummary: null,
+      setTripSummary: (tripSummary) => set({ tripSummary }),
+
       isOptimizing: false,
+      setIsOptimizing: (isOptimizing) => set({ isOptimizing }),
+
+      userEmail: "",
+      setUserEmail: (userEmail) => set({ userEmail }),
+
+      reset: () =>
+        set({
+          dataset: null,
+          preferences: defaultPreferences,
+          optimizationResult: null,
+          tripSummary: null,
+          isOptimizing: false,
+          userEmail: "",
+        }),
     }),
-}));
+    {
+      name: "voyara-session",
+      storage: createJSONStorage(() => sessionStorage),
+      partialize: (state) => ({
+        dataset: state.dataset,
+        preferences: state.preferences,
+        optimizationResult: state.optimizationResult,
+        tripSummary: state.tripSummary,
+        userEmail: state.userEmail,
+      }),
+    }
+  )
+);

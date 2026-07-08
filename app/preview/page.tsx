@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -20,6 +19,7 @@ import {
   List,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/PageTransition";
 import type { Attraction } from "@/types";
 
@@ -97,14 +97,7 @@ export default function PreviewPage() {
       <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-white/[0.015] rounded-full blur-3xl" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <span className="text-white/50 text-sm" style={{ fontFamily: "system-ui, sans-serif" }}>
-            Step 3 of 4
-          </span>
-        </nav>
+        <Navbar />
 
         <div className="flex-1 px-5 sm:px-8 md:px-12 pb-20">
           <PageTransition>

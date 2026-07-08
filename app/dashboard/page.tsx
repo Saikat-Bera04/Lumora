@@ -20,6 +20,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { StatsCard } from "@/components/ui/StatsCard";
 import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/PageTransition";
 import { formatCurrency, formatDistance, formatTime } from "@/lib/utils";
@@ -49,39 +50,22 @@ export default function DashboardPage() {
       <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-white/[0.01] rounded-full blur-3xl" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <div className="flex items-center gap-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 transition-all duration-300 hover:text-white hover:scale-105"
-                style={{ fontFamily: "system-ui, sans-serif" }}
-              >
-                <item.icon size={14} />
-                <span className="hidden sm:inline">{item.label}</span>
-              </Link>
-            ))}
-          </div>
-        </nav>
+        <Navbar />
 
         <div className="flex-1 px-5 sm:px-8 md:px-12 pb-20">
           <PageTransition>
             {/* Hero Title */}
             <FadeIn className="text-center mb-10 sm:mb-14">
               <div className="liquid-glass rounded-full px-5 py-2 text-xs inline-block mb-6"
-                style={{ fontFamily: "system-ui, sans-serif", color: "rgba(255,255,255,0.6)" }}>
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif", color: "rgba(255,255,255,0.6)" }}>
                 Optimization Complete • {r.attractionsVisited} attractions selected
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl text-white leading-[1.1] mb-4">
-                Your Optimized Itinerary
+                Your Perfect Journey Awaits
               </h1>
               <p className="text-white/60 text-sm max-w-lg mx-auto"
-                style={{ fontFamily: "system-ui, sans-serif" }}>
-                Curated route maximizing experience within your budget and time constraints.
+                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+                Here&apos;s your personalized itinerary optimized for time, cost, and unforgettable experiences.
               </p>
             </FadeIn>
 

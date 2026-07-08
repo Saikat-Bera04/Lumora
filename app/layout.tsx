@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif } from "next/font/google";
+import { Instrument_Serif, Inter } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
@@ -10,11 +10,16 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
 export const metadata: Metadata = {
-  title: "Lumora Planner — Plan Smarter. Travel Better.",
+  title: "Voyara — Travel Without the Guesswork",
   description:
-    "A premium tourist travel planner that generates optimized itineraries using advanced algorithms. Plan your perfect trip with Lumora.",
-  keywords: ["travel planner", "tourist", "itinerary", "optimization", "Kolkata"],
+    "Transform your travel plans into unforgettable experiences. Upload your destinations, set your budget and available time, and let intelligent optimization create the perfect itinerary for you.",
+  keywords: ["travel planner", "tourist", "itinerary", "optimization", "DAA", "route optimization", "Voyara"],
 };
 
 export default function RootLayout({
@@ -23,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${instrumentSerif.variable} h-full antialiased`}>
+    <html lang="en" className={`${instrumentSerif.variable} ${inter.variable} h-full antialiased`}>
       <body
         className="min-h-full flex flex-col"
         style={{ fontFamily: "'Instrument Serif', serif" }}
@@ -38,7 +43,7 @@ export default function RootLayout({
               backdropFilter: "blur(12px)",
               border: "1px solid rgba(255,255,255,0.1)",
               borderRadius: "12px",
-              fontFamily: "system-ui, sans-serif",
+              fontFamily: "var(--font-inter), system-ui, sans-serif",
               fontSize: "14px",
             },
           }}

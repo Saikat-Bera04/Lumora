@@ -4,7 +4,8 @@ import type { MapCoordinate, Attraction } from "@/types";
  * Kolkata-area coordinate map for known attractions.
  * Used to generate map markers when real geocoding isn't available.
  */
-const KOLKATA_COORDS: Record<string, { lat: number; lng: number }> = {
+const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
+  // Kolkata
   "victoria memorial": { lat: 22.5448, lng: 88.3426 },
   "science city": { lat: 22.5402, lng: 88.3972 },
   "eco park": { lat: 22.6022, lng: 88.4654 },
@@ -25,6 +26,12 @@ const KOLKATA_COORDS: Record<string, { lat: number; lng: number }> = {
   "aquatica": { lat: 22.5691, lng: 88.4374 },
   "alipore zoo": { lat: 22.5366, lng: 88.3322 },
   "botanical garden": { lat: 22.5569, lng: 88.3072 },
+  // Bhubaneswar / Puri
+  "lingaraj temple": { lat: 20.2384, lng: 85.8338 },
+  "iskcon bhubaneswar": { lat: 20.2982, lng: 85.8242 },
+  "jagannath temple": { lat: 19.8135, lng: 85.8312 },
+  "rajarani temple": { lat: 20.2415, lng: 85.8364 },
+  "dhauli shanti stupa": { lat: 20.1924, lng: 85.8394 },
 };
 
 /**
@@ -41,7 +48,7 @@ export function generateCoordinates(
 
   return attractions.map((a, idx) => {
     const name = a.name.toLowerCase();
-    const known = KOLKATA_COORDS[name];
+    const known = KNOWN_COORDS[name];
 
     return {
       id: a.id,

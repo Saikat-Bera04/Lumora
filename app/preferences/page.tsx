@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Wallet,
@@ -18,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { PageTransition, FadeIn } from "@/components/ui/PageTransition";
 
 const TRANSPORT_MODES = [
@@ -75,17 +75,7 @@ export default function PreferencesPage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navbar */}
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <span
-            className="text-white/50 text-sm"
-            style={{ fontFamily: "system-ui, sans-serif" }}
-          >
-            Step 2 of 4
-          </span>
-        </nav>
+        <Navbar />
 
         <div className="flex-1 flex flex-col items-center px-5 sm:px-8 pb-20">
           <PageTransition>

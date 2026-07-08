@@ -2,19 +2,16 @@
 
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   PieChart,
   BarChart3,
   TrendingUp,
   Star,
-  Map,
-  FileText,
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { getCategoryColor } from "@/lib/helpers";
 import { PageTransition, FadeIn, StaggerContainer, StaggerItem } from "@/components/ui/PageTransition";
 
@@ -159,25 +156,7 @@ export default function AnalyticsPage() {
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic">
-            Lumora
-          </Link>
-          <div className="flex items-center gap-2">
-            <Link href="/dashboard" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <ArrowLeft size={14} /> Dashboard
-            </Link>
-            <Link href="/map" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <Map size={14} /> <span className="hidden sm:inline">Map</span>
-            </Link>
-            <Link href="/summary" className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-              style={{ fontFamily: "system-ui, sans-serif" }}>
-              <FileText size={14} /> <span className="hidden sm:inline">Summary</span>
-            </Link>
-          </div>
-        </nav>
+        <Navbar />
 
         <div className="flex-1 px-5 sm:px-8 md:px-12 pb-20">
           <PageTransition>

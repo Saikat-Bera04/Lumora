@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Route, Wallet, Clock, Navigation } from "lucide-react";
+import { MapPin, Route, Wallet, Clock, Navigation } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { Navbar } from "@/components/ui/Navbar";
 import { generateCoordinates } from "@/lib/helpers";
 import { FadeIn } from "@/components/ui/PageTransition";
 
@@ -31,13 +31,31 @@ const Polyline = dynamic(
   () => import("react-leaflet").then((m) => m.Polyline),
   { ssr: false }
 );
+const MapBounds = dynamic(
+  () => import("@/components/ui/MapBounds").then((m) => m.MapBounds),
+  { ssr: false }
+);
 
 export default function MapPage() {
   const router = useRouter();
   const { optimizationResult } = useStore();
 
   useEffect(() => {
-    if (!optimizationResult) router.push("/upload");
+    if (!optimizationResult) {
+      router.push("/upload");
+      return;
+    }
+    
+    // Fix Leaflet default icon
+    (async function init() {
+      const L = await import("leaflet");
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      });
+    })();
   }, [optimizationResult, router]);
 
   // Generate coordinates for itinerary stops
@@ -110,23 +128,14 @@ export default function MapPage() {
               </Popup>
             </Marker>
           ))}
+          
+          <MapBounds coordinates={coordinates} />
         </MapContainer>
       </div>
 
       {/* Floating Nav */}
-      <div className="absolute top-0 left-0 right-0 z-[1000] px-5 sm:px-8 py-5">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="text-white text-xl sm:text-2xl italic drop-shadow-lg">
-            Lumora
-          </Link>
-          <Link
-            href="/dashboard"
-            className="liquid-glass rounded-full px-4 py-2 text-white/70 text-xs flex items-center gap-2 hover:text-white transition-all"
-            style={{ fontFamily: "system-ui, sans-serif" }}
-          >
-            <ArrowLeft size={14} /> Dashboard
-          </Link>
-        </div>
+      <div className="absolute top-0 left-0 right-0 z-[1000]">
+        <Navbar floating />
       </div>
 
       {/* Floating Legend */}
