@@ -39,16 +39,15 @@ export function Navbar({ floating = false }: NavbarProps) {
   return (
     <>
       <nav
-        className={`flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6 ${
-          floating ? "absolute top-0 left-0 right-0 z-[1000]" : ""
-        }`}
+        className={`flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6 ${floating ? "absolute top-0 left-0 right-0 z-[1000]" : ""
+          }`}
       >
         {/* Logo */}
         <Link
           href="/"
           className="text-white text-xl sm:text-2xl italic tracking-tight"
         >
-          Voyara
+          Lumora
         </Link>
 
         {/* Desktop Nav */}
@@ -61,11 +60,10 @@ export function Navbar({ floating = false }: NavbarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-xs px-3 py-1.5 rounded-full transition-all duration-300 flex items-center gap-1.5 ${
-                    isActive
+                  className={`text-xs px-3 py-1.5 rounded-full transition-all duration-300 flex items-center gap-1.5 ${isActive
                       ? "bg-white text-black font-medium"
                       : "text-white/70 hover:text-white"
-                  }`}
+                    }`}
                   style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
                 >
                   <Icon size={13} />
@@ -128,14 +126,12 @@ export function Navbar({ floating = false }: NavbarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 text-lg transition-all ${
-                    isActive ? "text-white" : "text-white/60 hover:text-white"
-                  }`}
+                  className={`flex items-center gap-3 text-lg transition-all ${isActive ? "text-white" : "text-white/60 hover:text-white"
+                    }`}
                   style={{
                     fontFamily: "var(--font-inter), system-ui, sans-serif",
-                    animation: `fade-in-up 500ms cubic-bezier(0.4,0,0.2,1) ${
-                      100 + i * 50
-                    }ms both`,
+                    animation: `fade-in-up 500ms cubic-bezier(0.4,0,0.2,1) ${100 + i * 50
+                      }ms both`,
                   }}
                   onClick={() => setMobileMenuOpen(false)}
                 >

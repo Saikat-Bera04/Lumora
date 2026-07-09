@@ -72,7 +72,7 @@ export const useStore = create<AppState>()(
         }),
     }),
     {
-      name: "voyara-session",
+      name: "Lumora-session",
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         dataset: state.dataset,

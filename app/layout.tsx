@@ -16,10 +16,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Voyara — Travel Without the Guesswork",
+  title: "Lumora — Travel Without the Guesswork",
   description:
     "Transform your travel plans into unforgettable experiences. Upload your destinations, set your budget and available time, and let intelligent optimization create the perfect itinerary for you.",
-  keywords: ["travel planner", "tourist", "itinerary", "optimization", "DAA", "route optimization", "Voyara"],
+  keywords: ["travel planner", "tourist", "itinerary", "optimization", "DAA", "route optimization", "Lumora"],
 };
 
 export default function RootLayout({

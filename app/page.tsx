@@ -190,7 +190,7 @@ export default function LandingPage() {
         {/* ═══════════════ NAVIGATION ═══════════════ */}
         <nav className="flex items-center justify-between px-5 sm:px-8 md:px-12 py-5 sm:py-6">
           <Link href="/" className="text-white text-xl sm:text-2xl italic tracking-tight">
-            Voyara
+            Lumora
           </Link>
 
           {/* Desktop */}
@@ -296,35 +296,32 @@ export default function LandingPage() {
                 muted
                 loop
                 playsInline
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                  index === activeVideo ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === activeVideo ? "opacity-100" : "opacity-0"
+                  }`}
               />
             ))}
-            
+
             {/* Transparent PNG Overlay with Train Bob Animation */}
-            <div 
+            <div
               className="absolute inset-0 w-full h-full bg-[url('https://soft-zoom-63098134.figma.site/_assets/v11/0b4a435b2df2747593c43d7a1c9b4578f7d8d90c.png')] bg-cover bg-center z-10 animate-train-bob"
             />
-            
+
             {/* Gradient Overlay for Text Readability and Blending */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black z-20" />
-            
+
             {/* Video Controls / Labels */}
             <div className="absolute bottom-10 left-0 right-0 z-30 flex justify-center items-center gap-6 md:gap-10 pointer-events-auto">
               {VIDEOS.map((video, index) => (
                 <div
                   key={video.label}
                   onClick={() => setActiveVideo(index)}
-                  className={`cursor-pointer transition-all duration-300 ${
-                    index === activeVideo ? "text-white scale-110" : "text-white/40 hover:text-white/80"
-                  }`}
+                  className={`cursor-pointer transition-all duration-300 ${index === activeVideo ? "text-white scale-110" : "text-white/40 hover:text-white/80"
+                    }`}
                   style={{ fontFamily: "system-ui, sans-serif" }}
                 >
                   <div className="text-xs uppercase tracking-[0.2em]">{video.label}</div>
-                  <div className={`h-[1px] w-full mt-2 transition-all duration-300 ${
-                    index === activeVideo ? "bg-white" : "bg-transparent"
-                  }`} />
+                  <div className={`h-[1px] w-full mt-2 transition-all duration-300 ${index === activeVideo ? "bg-white" : "bg-transparent"
+                    }`} />
                 </div>
               ))}
             </div>
@@ -466,7 +463,7 @@ export default function LandingPage() {
                 className="text-white/55 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto"
                 style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
-                Voyara combines powerful optimization algorithms with a premium user
+                Lumora combines powerful optimization algorithms with a premium user
                 experience to help travelers create efficient, budget-conscious, and
                 memorable journeys. Whether you&apos;re exploring a new city or planning a
                 weekend getaway, every itinerary is crafted intelligently.
@@ -589,7 +586,7 @@ export default function LandingPage() {
                 Built with <Heart size={12} className="inline text-red-400 fill-red-400" /> using Next.js, TypeScript and DAA Algorithms.
               </p>
               <p className="text-white/15 text-xs" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
-                © {new Date().getFullYear()} Voyara — Travel Without the Guesswork.
+                © {new Date().getFullYear()} Lumora — Travel Without the Guesswork.
               </p>
             </FadeInSection>
           </div>
