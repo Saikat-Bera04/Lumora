@@ -424,16 +424,21 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
             {FEATURES.map((feature, i) => (
               <FadeInSection key={feature.title} delay={i * 0.1}>
-                <div className="liquid-glass feature-card rounded-2xl p-7 h-full">
-                  <div className="text-3xl mb-4">{feature.emoji}</div>
+                <div className="liquid-glass feature-card group rounded-2xl p-7 h-full border border-white/5 hover:border-white/20 transition-all duration-300 flex flex-col relative overflow-hidden">
+                  <div className="absolute -top-4 -right-4 p-4 opacity-[0.03] pointer-events-none group-hover:opacity-10 transition-opacity duration-500 group-hover:scale-110">
+                    <feature.icon className="w-32 h-32" />
+                  </div>
+                  <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center mb-6 border border-white/10 group-hover:scale-110 group-hover:bg-white/10 transition-all duration-300 shadow-lg">
+                    <feature.icon className="w-6 h-6 text-white/80 group-hover:text-white" />
+                  </div>
                   <h3
-                    className="text-white text-lg mb-2"
+                    className="text-white text-lg font-medium mb-3 tracking-wide"
                     style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
                   >
                     {feature.title}
                   </h3>
                   <p
-                    className="text-white/50 text-sm leading-relaxed"
+                    className="text-white/60 text-sm leading-relaxed"
                     style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
                   >
                     {feature.description}
@@ -489,8 +494,9 @@ export default function LandingPage() {
                 <FadeInSection key={step.title} delay={i * 0.12}>
                   <div className="flex flex-col items-center text-center">
                     {/* Step Number */}
-                    <div className="liquid-glass rounded-2xl w-20 h-20 flex items-center justify-center text-3xl mb-5 animate-pulse-glow">
-                      {step.emoji}
+                    <div className="liquid-glass rounded-2xl w-20 h-20 flex items-center justify-center mb-5 border border-white/10 group-hover:border-white/30 transition-all duration-300 relative overflow-hidden group shadow-lg">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <step.icon className="w-8 h-8 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
                     </div>
 
                     {/* Step Label */}
