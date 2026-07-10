@@ -29,6 +29,7 @@ export interface Preferences {
   budget: number;
   maxTime: number; // hours
   startLocation: number; // attraction ID
+  endLocation: number; // attraction ID
   preferredCategories: string[];
   transportMode: "walking" | "auto" | "public";
   maxAttractions: number;

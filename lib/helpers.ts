@@ -32,6 +32,10 @@ const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
   "jagannath temple": { lat: 19.8135, lng: 85.8312 },
   "rajarani temple": { lat: 20.2415, lng: 85.8364 },
   "dhauli shanti stupa": { lat: 20.1924, lng: 85.8394 },
+  "konark sun temple": { lat: 19.8876, lng: 86.0945 },
+  "bindu sagar lake": { lat: 20.2405, lng: 85.8354 },
+  "puri beach": { lat: 19.7983, lng: 85.8245 },
+  "khandagiri caves": { lat: 20.2588, lng: 85.7847 },
 };
 
 /**
@@ -41,27 +45,40 @@ const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
 export function generateCoordinates(
   itinerary: ItineraryStop[]
 ): MapCoordinate[] {
-  // Base coordinate (could be anything, let's use a nice default)
-  let currentLat = 22.5726; // Kolkata center
+  // Base coordinate (default to Kolkata if absolutely nothing is known)
+  let currentLat = 22.5726; 
   let currentLng = 88.3639;
   let currentAngle = 0;
 
+  // Find the first known coordinate in the itinerary to ground the map
+  for (const stop of itinerary) {
+    const known = KNOWN_COORDS[stop.attraction.name.toLowerCase()];
+    if (known) {
+      currentLat = known.lat;
+      currentLng = known.lng;
+      break;
+    }
+  }
+
   return itinerary.map((stop, idx) => {
-    if (idx === 0) {
-      // First stop can try to use known coords to ground the map if available
-      const name = stop.attraction.name.toLowerCase();
-      const known = KNOWN_COORDS[name];
-      if (known) {
-        currentLat = known.lat;
-        currentLng = known.lng;
-      }
+    const name = stop.attraction.name.toLowerCase();
+    const known = KNOWN_COORDS[name];
+
+    if (known) {
+      currentLat = known.lat;
+      currentLng = known.lng;
     } else {
-      // For subsequent stops, place them relative to previous based on dataset distance
-      const distKm = stop.travelDistanceFromPrev;
+      // For subsequent stops or unknown stops, place them relative to previous
+      let distKm = stop.travelDistanceFromPrev;
+      if (typeof distKm !== "number" || !isFinite(distKm)) {
+        distKm = 5;
+      }
+      if (distKm === 0) distKm = 5; // ensure it doesn't overlap completely if we have to guess
+
       const distDeg = distKm / 111.0; // rough approximation: 1 deg = 111 km
 
       // Vary the angle slightly so it doesn't just form a straight line
-      currentAngle += (Math.PI / 4) + (Math.sin(idx) * 0.2); // ~45 deg + some variation
+      currentAngle += (Math.PI / 4) + (Math.sin(idx) * 0.2); 
 
       currentLat += distDeg * Math.cos(currentAngle);
       currentLng += distDeg * Math.sin(currentAngle);

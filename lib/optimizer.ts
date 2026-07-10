@@ -30,39 +30,31 @@ export function optimize(
   // Step 2: Compute all-pairs shortest paths
   const allPairs = allPairsShortestPaths(graph);
 
-  // Step 3: Filter by preferred categories (if any selected)
+  // Step 3: Setup candidates and run Knapsack selection
   let candidates = dataset.attractions;
   if (preferences.preferredCategories.length > 0) {
     candidates = candidates.filter((a) =>
       preferences.preferredCategories.includes(a.category)
     );
-    // If filter is too restrictive, fall back to all attractions
     if (candidates.length === 0) {
       candidates = dataset.attractions;
     }
   }
 
-  // Step 4: Calculate travel costs from start to each attraction
   const startDijkstra = dijkstra(graph, preferences.startLocation);
-
-  // Filter unreachable candidates
   candidates = candidates.filter((a) => {
-    return (startDijkstra.distances.get(a.id) ?? Infinity) < Infinity;
+    return (
+      (startDijkstra.distances.get(a.id) ?? Infinity) < Infinity &&
+      a.id !== preferences.startLocation &&
+      a.id !== preferences.endLocation
+    );
   });
 
-  if (candidates.length === 0) {
-    candidates = dataset.attractions; 
-  }
-
-  // Compute available budget for entry fees dynamically based on average travel costs
   const avgTravelCost = candidates.length > 0 ? candidates.reduce((sum, a) => sum + (startDijkstra.costs.get(a.id) ?? 0), 0) / candidates.length : 50;
   const travelBudgetEstimate = avgTravelCost * Math.min(preferences.maxAttractions, candidates.length);
   const entryBudget = Math.max(0, preferences.budget - travelBudgetEstimate);
 
-  // Step 5: Run Knapsack — select attractions under budget & time
   let selectedAttractions: Attraction[];
-
-  // Use DP knapsack for small datasets, greedy for large ones
   if (candidates.length <= 20 && entryBudget <= 5000) {
     selectedAttractions = knapsack(
       candidates,
@@ -79,11 +71,22 @@ export function optimize(
     );
   }
 
+  // Include start and end in the selection for TSP
+  const attractionMap = new Map(dataset.attractions.map((a) => [a.id, a]));
+  const start = attractionMap.get(preferences.startLocation);
+  if (start) selectedAttractions.push(start);
+  
+  const end = attractionMap.get(preferences.endLocation);
+  if (end && preferences.startLocation !== preferences.endLocation) {
+    selectedAttractions.push(end);
+  }
+
   // Step 6: Run TSP — order attractions optimally
   const orderedAttractions = nearestNeighborTSP(
     selectedAttractions,
     preferences.startLocation,
-    allPairs
+    allPairs,
+    preferences.endLocation
   );
 
   // Step 7: Build detailed itinerary
@@ -93,18 +96,6 @@ export function optimize(
     allPairs,
     preferences.transportMode
   );
-
-  // Trim itinerary to strictly enforce constraints post-TSP
-  while (itinerary.length > 0) {
-    const cost = itinerary.reduce((sum, stop) => sum + stop.attraction.entryFee + stop.travelCostFromPrev, 0);
-    const time = itinerary[itinerary.length - 1].departureTime;
-
-    if (cost <= preferences.budget && time <= preferences.maxTime) {
-      break;
-    }
-    // Remove last stop if over budget/time
-    itinerary.pop();
-  }
 
   // Step 8: Calculate summary metrics
   const totalEntryFees = itinerary.reduce(
@@ -172,6 +163,9 @@ function buildItinerary(
       if (result) {
         travelDistance = result.distances.get(attraction.id) ?? 0;
         travelCost = result.costs.get(attraction.id) ?? 0;
+        
+        if (!isFinite(travelDistance)) travelDistance = 0;
+        if (!isFinite(travelCost)) travelCost = 0;
       }
     }
 

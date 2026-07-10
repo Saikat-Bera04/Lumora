@@ -35,6 +35,7 @@ const defaultPreferences: Preferences = {
   budget: 1000,
   maxTime: 8,
   startLocation: 1,
+  endLocation: 2,
   preferredCategories: [],
   transportMode: "auto",
   maxAttractions: 5,
