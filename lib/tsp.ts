@@ -16,7 +16,8 @@ import type { Attraction, AdjacencyList, DijkstraResult } from "@/types";
 export function nearestNeighborTSP(
   attractions: Attraction[],
   startId: number,
-  allPairs: Map<number, DijkstraResult>
+  allPairs: Map<number, DijkstraResult>,
+  endId?: number
 ): Attraction[] {
   if (attractions.length <= 1) return [...attractions];
 
@@ -34,12 +35,24 @@ export function nearestNeighborTSP(
   }
 
   while (unvisited.size > 0) {
+    // If only endId is left, visit it
+    if (endId !== undefined && unvisited.size === 1 && unvisited.has(endId)) {
+      unvisited.delete(endId);
+      const endAttraction = attractionMap.get(endId);
+      if (endAttraction) ordered.push(endAttraction);
+      break;
+    }
+
     let nearestId = -1;
     let nearestDist = Infinity;
 
     const dijkstraResult = allPairs.get(currentId);
 
     for (const candidateId of unvisited) {
+      if (endId !== undefined && candidateId === endId && unvisited.size > 1) {
+        continue; // Don't visit end node early
+      }
+
       let dist = Infinity;
 
       if (dijkstraResult) {

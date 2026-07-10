@@ -33,6 +33,7 @@ export default function PreferencesPage() {
   const [budget, setBudget] = useState(preferences.budget);
   const [maxTime, setMaxTime] = useState(preferences.maxTime);
   const [startLocation, setStartLocation] = useState(preferences.startLocation);
+  const [endLocation, setEndLocation] = useState<number>(preferences.endLocation);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     preferences.preferredCategories
   );
@@ -61,6 +62,7 @@ export default function PreferencesPage() {
       budget,
       maxTime,
       startLocation,
+      endLocation,
       preferredCategories: selectedCategories,
       transportMode,
       maxAttractions,
@@ -93,58 +95,10 @@ export default function PreferencesPage() {
                 </p>
               </FadeIn>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Budget */}
-                <FadeIn delay={0.1}>
-                  <div className="liquid-glass rounded-2xl p-6">
-                    <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
-                      style={{ fontFamily: "system-ui, sans-serif" }}>
-                      <Wallet size={14} /> Budget (₹)
-                    </label>
-                    <input
-                      type="range"
-                      min={200}
-                      max={5000}
-                      step={50}
-                      value={budget}
-                      onChange={(e) => setBudget(Number(e.target.value))}
-                      className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
-                    />
-                    <div className="flex justify-between mt-3">
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>₹200</span>
-                      <span className="text-white text-2xl">₹{budget.toLocaleString()}</span>
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>₹5,000</span>
-                    </div>
-                  </div>
-                </FadeIn>
-
-                {/* Max Time */}
-                <FadeIn delay={0.15}>
-                  <div className="liquid-glass rounded-2xl p-6">
-                    <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
-                      style={{ fontFamily: "system-ui, sans-serif" }}>
-                      <Clock size={14} /> Maximum Time (hours)
-                    </label>
-                    <input
-                      type="range"
-                      min={2}
-                      max={16}
-                      step={0.5}
-                      value={maxTime}
-                      onChange={(e) => setMaxTime(Number(e.target.value))}
-                      className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
-                    />
-                    <div className="flex justify-between mt-3">
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>2h</span>
-                      <span className="text-white text-2xl">{maxTime}h</span>
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>16h</span>
-                    </div>
-                  </div>
-                </FadeIn>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
                 {/* Starting Location */}
-                <FadeIn delay={0.2}>
-                  <div className="liquid-glass rounded-2xl p-6">
+                <FadeIn delay={0.1}>
+                  <div className="liquid-glass rounded-2xl p-6 h-full">
                     <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
                       style={{ fontFamily: "system-ui, sans-serif" }}>
                       <MapPin size={14} /> Starting Location
@@ -164,64 +118,131 @@ export default function PreferencesPage() {
                   </div>
                 </FadeIn>
 
-                {/* Max Attractions */}
-                <FadeIn delay={0.25}>
-                  <div className="liquid-glass rounded-2xl p-6">
+                <FadeIn delay={0.15}>
+                  <div className="liquid-glass rounded-2xl p-6 h-full">
                     <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
                       style={{ fontFamily: "system-ui, sans-serif" }}>
-                      <Hash size={14} /> Max Attractions
+                      <MapPin size={14} /> Ending Location
                     </label>
-                    <input
-                      type="range"
-                      min={2}
-                      max={Math.min(dataset.attractions.length, 10)}
-                      step={1}
-                      value={maxAttractions}
-                      onChange={(e) => setMaxAttractions(Number(e.target.value))}
-                      className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
-                    />
-                    <div className="flex justify-between mt-3">
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>2</span>
-                      <span className="text-white text-2xl">{maxAttractions}</span>
-                      <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>
-                        {Math.min(dataset.attractions.length, 10)}
-                      </span>
-                    </div>
-                  </div>
-                </FadeIn>
-
-                {/* Categories */}
-                <FadeIn delay={0.3} className="md:col-span-2">
-                  <div className="liquid-glass rounded-2xl p-6">
-                    <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
-                      style={{ fontFamily: "system-ui, sans-serif" }}>
-                      <Tag size={14} /> Preferred Categories
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {categories.map((cat) => (
-                        <motion.button
-                          key={cat}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => toggleCategory(cat)}
-                          className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
-                            selectedCategories.includes(cat)
-                              ? "bg-white text-black"
-                              : "liquid-glass text-white/70 hover:text-white"
-                          }`}
-                          style={{ fontFamily: "system-ui, sans-serif" }}
-                        >
-                          {cat}
-                        </motion.button>
+                    <select
+                      value={endLocation}
+                      onChange={(e) => setEndLocation(Number(e.target.value))}
+                      className="w-full glass-input rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer"
+                      style={{ fontFamily: "system-ui, sans-serif" }}
+                    >
+                      {dataset.attractions.filter(a => a.id !== startLocation).map((a) => (
+                        <option key={a.id} value={a.id} className="bg-black text-white">
+                          {a.name}
+                        </option>
                       ))}
-                    </div>
-                    {selectedCategories.length === 0 && (
-                      <p className="text-white/30 text-xs mt-3" style={{ fontFamily: "system-ui, sans-serif" }}>
-                        No filter — all categories will be considered
-                      </p>
-                    )}
+                    </select>
                   </div>
                 </FadeIn>
 
+                {/* Budget */}
+                    <FadeIn delay={0.15}>
+                      <div className="liquid-glass rounded-2xl p-6">
+                        <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
+                          style={{ fontFamily: "system-ui, sans-serif" }}>
+                          <Wallet size={14} /> Budget (₹)
+                        </label>
+                        <input
+                          type="range"
+                          min={200}
+                          max={5000}
+                          step={50}
+                          value={budget}
+                          onChange={(e) => setBudget(Number(e.target.value))}
+                          className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                        />
+                        <div className="flex justify-between mt-3">
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>₹200</span>
+                          <span className="text-white text-2xl">₹{budget.toLocaleString()}</span>
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>₹5,000</span>
+                        </div>
+                      </div>
+                    </FadeIn>
+
+                    {/* Max Time */}
+                    <FadeIn delay={0.2}>
+                      <div className="liquid-glass rounded-2xl p-6">
+                        <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
+                          style={{ fontFamily: "system-ui, sans-serif" }}>
+                          <Clock size={14} /> Maximum Time (hours)
+                        </label>
+                        <input
+                          type="range"
+                          min={2}
+                          max={16}
+                          step={0.5}
+                          value={maxTime}
+                          onChange={(e) => setMaxTime(Number(e.target.value))}
+                          className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                        />
+                        <div className="flex justify-between mt-3">
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>2h</span>
+                          <span className="text-white text-2xl">{maxTime}h</span>
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>16h</span>
+                        </div>
+                      </div>
+                    </FadeIn>
+                {/* Max Attractions */}
+                    <FadeIn delay={0.25}>
+                      <div className="liquid-glass rounded-2xl p-6 h-full">
+                        <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
+                          style={{ fontFamily: "system-ui, sans-serif" }}>
+                          <Hash size={14} /> Max Attractions
+                        </label>
+                        <input
+                          type="range"
+                          min={2}
+                          max={Math.min(dataset.attractions.length, 10)}
+                          step={1}
+                          value={maxAttractions}
+                          onChange={(e) => setMaxAttractions(Number(e.target.value))}
+                          className="w-full accent-white h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                        />
+                        <div className="flex justify-between mt-3">
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>2</span>
+                          <span className="text-white text-2xl">{maxAttractions}</span>
+                          <span className="text-white/40 text-xs" style={{ fontFamily: "system-ui, sans-serif" }}>
+                            {Math.min(dataset.attractions.length, 10)}
+                          </span>
+                        </div>
+                      </div>
+                    </FadeIn>
+
+                    {/* Categories */}
+                    <FadeIn delay={0.3} className="md:col-span-2">
+                      <div className="liquid-glass rounded-2xl p-6">
+                        <label className="flex items-center gap-2 text-white/60 text-xs uppercase tracking-wider mb-4"
+                          style={{ fontFamily: "system-ui, sans-serif" }}>
+                          <Tag size={14} /> Preferred Categories
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                          {categories.map((cat) => (
+                            <motion.button
+                              key={cat}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => toggleCategory(cat)}
+                              className={`px-4 py-2 rounded-full text-sm transition-all duration-300 ${
+                                selectedCategories.includes(cat)
+                                  ? "bg-white text-black"
+                                  : "liquid-glass text-white/70 hover:text-white"
+                              }`}
+                              style={{ fontFamily: "system-ui, sans-serif" }}
+                            >
+                              {cat}
+                            </motion.button>
+                          ))}
+                        </div>
+                        {selectedCategories.length === 0 && (
+                          <p className="text-white/30 text-xs mt-3" style={{ fontFamily: "system-ui, sans-serif" }}>
+                            No filter — all categories will be considered
+                          </p>
+                        )}
+                      </div>
+                    </FadeIn>
                 {/* Transport Mode */}
                 <FadeIn delay={0.35} className="md:col-span-2">
                   <div className="liquid-glass rounded-2xl p-6">
