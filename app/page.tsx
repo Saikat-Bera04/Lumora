@@ -123,6 +123,39 @@ const NAV_LINKS = ["Features", "About", "How It Works"];
    Animation Helpers
 ──────────────────────────────────────────────── */
 
+function FloatingDots() {
+  const [dots, setDots] = useState<Array<{ id: number; left: number; delay: number; duration: number; size: number }>>([]);
+
+  useEffect(() => {
+    const newDots = Array.from({ length: 40 }).map((_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      delay: Math.random() * 20,
+      duration: 10 + Math.random() * 20,
+      size: 2 + Math.random() * 3,
+    }));
+    setDots(newDots);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {dots.map((dot) => (
+        <div
+          key={dot.id}
+          className="absolute rounded-full bg-white/20"
+          style={{
+            left: `${dot.left}%`,
+            top: `-10%`,
+            width: `${dot.size}px`,
+            height: `${dot.size}px`,
+            animation: `snowfall ${dot.duration}s linear ${dot.delay}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function FadeInSection({
   children,
   className = "",
@@ -157,9 +190,6 @@ function FadeInSection({
 ──────────────────────────────────────────────── */
 
 export default function LandingPage() {
-  const router = useRouter();
-  const { setUserEmail } = useStore();
-  const [email, setEmail] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeVideo, setActiveVideo] = useState(0);
 
@@ -170,19 +200,12 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleStartPlanning = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setUserEmail(email.trim());
-    }
-    router.push("/upload");
-  };
-
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="relative min-h-screen bg-neutral-950 text-white overflow-x-hidden">
       {/* ── Background Effects (Global) ── */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-black" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-800 via-neutral-950 to-black opacity-80" />
+        <FloatingDots />
       </div>
 
       {/* ── Content ── */}
@@ -364,45 +387,20 @@ export default function LandingPage() {
               and let intelligent optimization create the perfect itinerary for you.
             </motion.p>
 
-            {/* Email Input */}
-            <motion.form
-              onSubmit={handleStartPlanning}
+            {/* CTA Button */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="liquid-glass rounded-full flex items-center p-1.5 w-full max-w-[360px] sm:max-w-md mb-5"
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-transparent text-sm px-4 py-2.5 outline-none text-white placeholder:text-white/60"
-                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
-              />
-              <button
-                type="submit"
-                className="bg-white text-black text-sm font-medium px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-200 hover:bg-white/90 flex items-center gap-2"
-                style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
-              >
-                <Sparkles size={14} />
-                Start Planning
-              </button>
-            </motion.form>
-
-            {/* Secondary Button */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex items-center gap-4 mt-2"
             >
               <Link
                 href="/upload"
-                className="text-white/60 text-sm hover:text-white transition-colors flex items-center gap-2 drop-shadow-sm"
+                className="bg-white text-black text-base font-medium px-8 py-3.5 rounded-full whitespace-nowrap transition-all duration-300 hover:bg-white/90 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
                 style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
               >
-                Explore Demo
-                <ArrowRight size={14} />
+                <Sparkles size={16} />
+                Start Planning
               </Link>
             </motion.div>
           </div>

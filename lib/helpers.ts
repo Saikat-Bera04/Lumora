@@ -1,4 +1,4 @@
-import type { MapCoordinate, Attraction } from "@/types";
+import type { MapCoordinate, Attraction, ItineraryStop } from "@/types";
 
 /**
  * Kolkata-area coordinate map for known attractions.
@@ -35,27 +35,44 @@ const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
 };
 
 /**
- * Generate map coordinates for attractions.
- * Falls back to generated coordinates if not in the known list.
+ * Generate map coordinates for itinerary stops.
+ * Uses the dataset's travel distances to generate relative coordinates.
  */
 export function generateCoordinates(
-  attractions: Attraction[],
-  orderMap?: Map<number, number>
+  itinerary: ItineraryStop[]
 ): MapCoordinate[] {
-  // Base Kolkata center
-  const baseLat = 22.5726;
-  const baseLng = 88.3639;
+  // Base coordinate (could be anything, let's use a nice default)
+  let currentLat = 22.5726; // Kolkata center
+  let currentLng = 88.3639;
+  let currentAngle = 0;
 
-  return attractions.map((a, idx) => {
-    const name = a.name.toLowerCase();
-    const known = KNOWN_COORDS[name];
+  return itinerary.map((stop, idx) => {
+    if (idx === 0) {
+      // First stop can try to use known coords to ground the map if available
+      const name = stop.attraction.name.toLowerCase();
+      const known = KNOWN_COORDS[name];
+      if (known) {
+        currentLat = known.lat;
+        currentLng = known.lng;
+      }
+    } else {
+      // For subsequent stops, place them relative to previous based on dataset distance
+      const distKm = stop.travelDistanceFromPrev;
+      const distDeg = distKm / 111.0; // rough approximation: 1 deg = 111 km
+
+      // Vary the angle slightly so it doesn't just form a straight line
+      currentAngle += (Math.PI / 4) + (Math.sin(idx) * 0.2); // ~45 deg + some variation
+
+      currentLat += distDeg * Math.cos(currentAngle);
+      currentLng += distDeg * Math.sin(currentAngle);
+    }
 
     return {
-      id: a.id,
-      name: a.name,
-      lat: known ? known.lat : baseLat + (Math.sin(a.id * 1.5) * 0.05),
-      lng: known ? known.lng : baseLng + (Math.cos(a.id * 1.5) * 0.05),
-      order: orderMap?.get(a.id) ?? idx + 1,
+      id: stop.attraction.id,
+      name: stop.attraction.name,
+      lat: currentLat,
+      lng: currentLng,
+      order: stop.order,
     };
   });
 }

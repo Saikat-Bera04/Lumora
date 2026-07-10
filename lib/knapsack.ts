@@ -56,7 +56,7 @@ export function knapsack(
   for (let i = 1; i <= n; i++) {
     const item = attractions[i - 1];
     const fee = Math.floor(item.entryFee);
-    const time = Math.floor(item.visitTime * 2); // in 30-min slots
+    const time = Math.floor((item.visitTime + 0.5) * 2); // in 30-min slots + 30 mins avg travel time
 
     for (let b = 0; b <= maxB; b++) {
       for (let t = 0; t <= maxT; t++) {
@@ -84,7 +84,7 @@ export function knapsack(
       const item = attractions[i - 1];
       result.push(item);
       remB -= Math.floor(item.entryFee);
-      remT -= Math.floor(item.visitTime * 2);
+      remT -= Math.floor((item.visitTime + 0.5) * 2);
     }
   }
 
@@ -106,8 +106,8 @@ export function greedyKnapsack(
 ): Attraction[] {
   // Sort by value density (rating / (entryFee + visitTime_cost))
   const sorted = [...attractions].sort((a, b) => {
-    const densityA = a.rating / (a.entryFee + a.visitTime);
-    const densityB = b.rating / (b.entryFee + b.visitTime);
+    const densityA = a.rating / (a.entryFee + a.visitTime + 0.5);
+    const densityB = b.rating / (b.entryFee + b.visitTime + 0.5);
     return densityB - densityA;
   });
 
@@ -118,10 +118,10 @@ export function greedyKnapsack(
   for (const attraction of sorted) {
     if (result.length >= maxAttractions) break;
     if (usedBudget + attraction.entryFee <= budget &&
-        usedTime + attraction.visitTime <= maxTime) {
+        usedTime + attraction.visitTime + 0.5 <= maxTime) {
       result.push(attraction);
       usedBudget += attraction.entryFee;
-      usedTime += attraction.visitTime;
+      usedTime += attraction.visitTime + 0.5;
     }
   }
 

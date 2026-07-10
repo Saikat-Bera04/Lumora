@@ -1,12 +1,77 @@
 import type { AdjacencyList, DijkstraResult } from "@/types";
 
+/* ────────────────────────────────────────────────
+   Binary Min-Heap Priority Queue
+   ──────────────────────────────────────────────── */
+
+interface HeapNode {
+  node: number;
+  distance: number;
+}
+
+class MinHeap {
+  private heap: HeapNode[] = [];
+
+  get size(): number {
+    return this.heap.length;
+  }
+
+  push(item: HeapNode): void {
+    this.heap.push(item);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  pop(): HeapNode | undefined {
+    if (this.heap.length === 0) return undefined;
+    const top = this.heap[0];
+    const last = this.heap.pop()!;
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.sinkDown(0);
+    }
+    return top;
+  }
+
+  private bubbleUp(idx: number): void {
+    while (idx > 0) {
+      const parent = Math.floor((idx - 1) / 2);
+      if (this.heap[parent].distance <= this.heap[idx].distance) break;
+      [this.heap[parent], this.heap[idx]] = [this.heap[idx], this.heap[parent]];
+      idx = parent;
+    }
+  }
+
+  private sinkDown(idx: number): void {
+    const length = this.heap.length;
+    while (true) {
+      const left = 2 * idx + 1;
+      const right = 2 * idx + 2;
+      let smallest = idx;
+
+      if (left < length && this.heap[left].distance < this.heap[smallest].distance) {
+        smallest = left;
+      }
+      if (right < length && this.heap[right].distance < this.heap[smallest].distance) {
+        smallest = right;
+      }
+      if (smallest === idx) break;
+      [this.heap[smallest], this.heap[idx]] = [this.heap[idx], this.heap[smallest]];
+      idx = smallest;
+    }
+  }
+}
+
+/* ────────────────────────────────────────────────
+   Dijkstra's Shortest Path Algorithm
+   ──────────────────────────────────────────────── */
+
 /**
  * Dijkstra's Shortest Path Algorithm
  *
  * Finds shortest distances and lowest travel costs from a source node
  * to all reachable nodes in a weighted graph.
  *
- * Time Complexity: O((V + E) log V) using a min-heap priority queue.
+ * Time Complexity: O((V + E) log V) using a binary min-heap.
  *
  * @param graph - Adjacency list representation of the graph
  * @param source - Source node ID
@@ -18,9 +83,8 @@ export function dijkstra(graph: AdjacencyList, source: number): DijkstraResult {
   const previous = new Map<number, number | null>();
   const visited = new Set<number>();
 
-  // Priority queue as sorted array (min-heap simulation)
-  // In production, use a proper binary heap for O(log n) operations
-  const pq: Array<{ node: number; distance: number }> = [];
+  // Binary min-heap priority queue — O(log n) insert & extract-min
+  const pq = new MinHeap();
 
   // Initialize all nodes with infinity distance
   for (const node of graph.keys()) {
@@ -34,10 +98,9 @@ export function dijkstra(graph: AdjacencyList, source: number): DijkstraResult {
   costs.set(source, 0);
   pq.push({ node: source, distance: 0 });
 
-  while (pq.length > 0) {
-    // Extract minimum distance node
-    pq.sort((a, b) => a.distance - b.distance);
-    const current = pq.shift()!;
+  while (pq.size > 0) {
+    // Extract minimum distance node — O(log V)
+    const current = pq.pop()!;
 
     if (visited.has(current.node)) continue;
     visited.add(current.node);
@@ -56,7 +119,7 @@ export function dijkstra(graph: AdjacencyList, source: number): DijkstraResult {
         distances.set(edge.to, newDistance);
         costs.set(edge.to, newCost);
         previous.set(edge.to, current.node);
-        pq.push({ node: edge.to, distance: newDistance });
+        pq.push({ node: edge.to, distance: newDistance }); // O(log V)
       }
     }
   }

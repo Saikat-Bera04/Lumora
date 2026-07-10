@@ -45,9 +45,19 @@ export function optimize(
   // Step 4: Calculate travel costs from start to each attraction
   const startDijkstra = dijkstra(graph, preferences.startLocation);
 
-  // Compute available budget for entry fees
-  // (subtract estimated minimum travel cost)
-  const entryBudget = Math.max(preferences.budget * 0.7, preferences.budget - 500);
+  // Filter unreachable candidates
+  candidates = candidates.filter((a) => {
+    return (startDijkstra.distances.get(a.id) ?? Infinity) < Infinity;
+  });
+
+  if (candidates.length === 0) {
+    candidates = dataset.attractions; 
+  }
+
+  // Compute available budget for entry fees dynamically based on average travel costs
+  const avgTravelCost = candidates.length > 0 ? candidates.reduce((sum, a) => sum + (startDijkstra.costs.get(a.id) ?? 0), 0) / candidates.length : 50;
+  const travelBudgetEstimate = avgTravelCost * Math.min(preferences.maxAttractions, candidates.length);
+  const entryBudget = Math.max(0, preferences.budget - travelBudgetEstimate);
 
   // Step 5: Run Knapsack — select attractions under budget & time
   let selectedAttractions: Attraction[];
@@ -83,6 +93,18 @@ export function optimize(
     allPairs,
     preferences.transportMode
   );
+
+  // Trim itinerary to strictly enforce constraints post-TSP
+  while (itinerary.length > 0) {
+    const cost = itinerary.reduce((sum, stop) => sum + stop.attraction.entryFee + stop.travelCostFromPrev, 0);
+    const time = itinerary[itinerary.length - 1].departureTime;
+
+    if (cost <= preferences.budget && time <= preferences.maxTime) {
+      break;
+    }
+    // Remove last stop if over budget/time
+    itinerary.pop();
+  }
 
   // Step 8: Calculate summary metrics
   const totalEntryFees = itinerary.reduce(

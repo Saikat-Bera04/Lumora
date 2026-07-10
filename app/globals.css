@@ -315,3 +315,32 @@ html, body {
 .animate-train-bob {
   animation: train-bob 3s ease-in-out infinite;
 }
+
+/* ── Snowfall Animation ── */
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* ── Dash Animation (Map Route) ── */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.animate-dash {
+  animation: dash 5s linear infinite;
+}

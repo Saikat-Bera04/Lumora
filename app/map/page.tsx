@@ -55,19 +55,14 @@ export default function MapPage() {
         iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
+      (window as any).L = L;
     })();
   }, [optimizationResult, router]);
 
   // Generate coordinates for itinerary stops
   const coordinates = useMemo(() => {
     if (!optimizationResult) return [];
-    const orderMap = new Map(
-      optimizationResult.itinerary.map((s) => [s.attraction.id, s.order])
-    );
-    return generateCoordinates(
-      optimizationResult.itinerary.map((s) => s.attraction),
-      orderMap
-    );
+    return generateCoordinates(optimizationResult.itinerary);
   }, [optimizationResult]);
 
   if (!optimizationResult) return null;
@@ -109,25 +104,41 @@ export default function MapPage() {
               positions={routePath}
               pathOptions={{
                 color: "#ffffff",
-                weight: 3,
-                opacity: 0.6,
-                dashArray: "10, 10",
+                weight: 4,
+                opacity: 0.8,
+                dashArray: "10, 15",
+                className: "animate-dash", // Assumes global CSS for dash animation if desired
               }}
             />
           )}
 
           {/* Markers */}
-          {coordinates.map((coord) => (
-            <Marker key={coord.id} position={[coord.lat, coord.lng]}>
-              <Popup>
-                <div style={{ fontFamily: "system-ui, sans-serif" }}>
-                  <strong>{coord.name}</strong>
-                  <br />
-                  Stop #{coord.order}
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+          {coordinates.map((coord) => {
+            // Create a custom numbered icon safely
+            const L = typeof window !== 'undefined' ? (window as any).L : undefined;
+            const customIcon = L ? new L.DivIcon({
+              className: 'custom-div-icon',
+              html: `<div style="background-color: white; color: black; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-family: system-ui, sans-serif;">${coord.order}</div>`,
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            }) : undefined;
+
+            return (
+              <Marker 
+                key={coord.id} 
+                position={[coord.lat, coord.lng]}
+                {...(customIcon ? { icon: customIcon } : {})}
+              >
+                <Popup className="custom-popup">
+                  <div style={{ fontFamily: "system-ui, sans-serif" }}>
+                    <strong>{coord.name}</strong>
+                    <br />
+                    Stop #{coord.order}
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          })}
           
           <MapBounds coordinates={coordinates} />
         </MapContainer>
