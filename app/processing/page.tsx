@@ -109,12 +109,10 @@ export default function ProcessingPage() {
   const estimatedRemaining = Math.max(0, estimatedTotal - elapsed / 1000);
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.01] rounded-full blur-3xl" />
+    <section className="relative min-h-screen bg-aurora overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/[0.01] rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <Navbar />
+      <div className="relative z-10 min-h-screen flex flex-col">        <Navbar />
 
         <div className="flex-1 flex flex-col items-center justify-center px-5 sm:px-8">
           <div className="w-full max-w-lg">

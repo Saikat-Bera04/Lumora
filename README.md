@@ -190,12 +190,7 @@ From,To,Distance(km),TravelCost
    ```bash
    npm install
    ```
-   Or using yarn/pnpm:
-   ```bash
-   yarn install
-   # or
-   pnpm install
-   ```
+
 
 3. **Run the development server:**
    ```bash

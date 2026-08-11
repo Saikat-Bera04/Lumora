@@ -126,8 +126,7 @@ export default function SummaryPage() {
   };
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
+    <section className="relative min-h-screen bg-aurora overflow-hidden">
 
       <div className="relative z-10 min-h-screen flex flex-col">
         <div className="print:hidden">

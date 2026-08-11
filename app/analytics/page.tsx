@@ -152,11 +152,8 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
-
-      <div className="relative z-10 min-h-screen flex flex-col">
-        <Navbar />
+    <section className="relative min-h-screen bg-aurora overflow-hidden">
+      <div className="relative z-10 min-h-screen flex flex-col">        <Navbar />
 
         <div className="flex-1 px-5 sm:px-8 md:px-12 pb-20">
           <PageTransition>
