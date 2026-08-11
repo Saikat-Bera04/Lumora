@@ -23,6 +23,41 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Dynamic Aurora Background ── */
+.bg-aurora {
+  position: relative;
+  background-color: #000000;
+  overflow: hidden;
+}
+
+.bg-aurora::before,
+.bg-aurora::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-aurora::before {
+  top: -10%;
+  left: -10%;
+  width: 70vw;
+  height: 70vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
+  animation: float 15s ease-in-out infinite alternate;
+}
+
+.bg-aurora::after {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 60%);
+  animation: float 20s ease-in-out infinite alternate-reverse;
+}
+
 /* ── Liquid Glass ── */
 .liquid-glass {
   background: rgba(255, 255, 255, 0.01);

@@ -92,9 +92,8 @@ export default function PreviewPage() {
   };
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-950 to-black" />
-      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-white/[0.015] rounded-full blur-3xl" />
+    <section className="relative min-h-screen bg-aurora overflow-hidden">
+      <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-white/[0.015] rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 min-h-screen flex flex-col">
         <Navbar />
